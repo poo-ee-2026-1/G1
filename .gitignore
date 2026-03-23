@@ -1,0 +1,10 @@
+# Arquivos compilados do Java
+bin/
+out/
+*.class
+
+# Configurações do VS Code
+.vscode/
+
+# Arquivos de sistema operacional
+.DS_Store
