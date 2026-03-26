@@ -33,14 +33,23 @@ The `JAVA PROJECTS` view allows you to manage your dependencies. More details ca
 ## Cronograma
 
 16/03 - Definição do tema do projeto: Estudo de rádio visibilidade e propagação;
+
 23/03 - Definição do cronograma de desenvolvimento;
+
 30/03 - Estrutura base do programa (Setup do projeto Java);
+
 06/04 - Definições de objetos e classes (Antena, Coordenada, Obstáculo);
+
 13/04 - Aprimoramento das características dos objetos (Ganho, Frequência, Altura);
+
 20/04 - Implementação do cálculo de distância geodésica (Haversine);
+
 27/04 - Desenvolvimento do algoritmo de cálculo da Zona de Fresnel;
+
 04/05 - Criação da lógica de análise de obstrução (Simulação de barreiras e relevo);
+
 11/05 - Testes de validação de visibilidade e correção de bugs;
+
 18/05 - Formatação da saída de dados (Exibição de status LoS e alertas de sinal);
 25/05 - Revisão final do código e preparação dos slides da apresentação;
 01/06 - Seminário.
