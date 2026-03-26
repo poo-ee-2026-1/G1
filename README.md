@@ -31,15 +31,16 @@ The `JAVA PROJECTS` view allows you to manage your dependencies. More details ca
   Como a infraestrutura é crítica e a energia elétrica não pode ser facilmente armazenada em larga escala, qualquer falha no mundo físico pode resultar em blecautes, danos a equipamentos caros e prejuízos enormes à sociedade. O simulador resolve o desafio de prever esses cenários complexos de forma totalmente segura. Não se pode simplesmente desligar uma linha física para testar se outra vai sobrecarregar. O simulador se faz necessário para prever esse efeito dominó (cascateamento) em um ambiente isolado e seguro.
   
 ## Cronograma
-- 16/03 - Definição do tema do projeto;
-- 23/03 - Definição do cronograma;
-- 30/03 - Estrutura base do programa;
-- 06/04 - Definições de objetos e classes;
-- 13/04 - Aprimoramento das características dos objetos;
-- 20/04 - Implementação da montagem da Matriz de Admitância (Ybus);
-- 27/04 - Desenvolvimento do algoritmo de cálculo (Newton-Raphson);
-- 04/05 - Criação da lógica de análise de contingência (simulação de falhas);
-- 11/05 - Testes de validação de fluxo e correção de bugs;
-- 18/05 - Formatação da saída de dados (exibição de tensões, fluxos e alertas);
-- 25/05 - Revisão final do código e preparação dos slides da apresentação;
-- 01/06 - Seminário.
+
+16/03 - Definição do tema do projeto: Estudo de rádio visibilidade e propagação;
+23/03 - Definição do cronograma de desenvolvimento;
+30/03 - Estrutura base do programa (Setup do projeto Java);
+06/04 - Definições de objetos e classes (Antena, Coordenada, Obstáculo);
+13/04 - Aprimoramento das características dos objetos (Ganho, Frequência, Altura);
+20/04 - Implementação do cálculo de distância geodésica (Haversine);
+27/04 - Desenvolvimento do algoritmo de cálculo da Zona de Fresnel;
+04/05 - Criação da lógica de análise de obstrução (Simulação de barreiras e relevo);
+11/05 - Testes de validação de visibilidade e correção de bugs;
+18/05 - Formatação da saída de dados (Exibição de status LoS e alertas de sinal);
+25/05 - Revisão final do código e preparação dos slides da apresentação;
+01/06 - Seminário.
