@@ -51,5 +51,7 @@ The `JAVA PROJECTS` view allows you to manage your dependencies. More details ca
 11/05 - Testes de validação de visibilidade e correção de bugs;
 
 18/05 - Formatação da saída de dados (Exibição de status LoS e alertas de sinal);
-25/05 - Revisão final do código e preparação dos slides da apresentação;
+
+25/05 - Revisão final do código;
+
 01/06 - Seminário.
