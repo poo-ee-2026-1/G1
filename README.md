@@ -52,5 +52,7 @@ Motivo
 11/05 - Testes de validação de visibilidade: Verificação de obstruções críticas e bugs.
 
 18/05 - Formatação da saída de dados: Exibição da distância total e status do enlace.
+
 25/05 - Revisão final do código e documentação.
+
 01/06 - Seminário e apresentação dos resultados.
