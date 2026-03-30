@@ -34,14 +34,23 @@ Motivo
 ## Cronograma
 
 16/03 - Definição do tema do projeto: Estudo de rádio visibilidade e propagação.
+
 23/03 - Definição do cronograma de desenvolvimento.
+
 30/03 - Estrutura base do programa: Setup do projeto e arquitetura de pacotes.
+
 06/04 - Definições de objetos e classes: Modelagem de Torres, Antenas e Coordenadas.
+
 13/04 - Aprimoramento das características dos objetos: Implementação de Ganho, Frequência e Altura.
+
 20/04 - Implementação do cálculo de distância geodésica: Integração de parâmetros geográficos.
+
 27/04 - Desenvolvimento do algoritmo de cálculo: Aplicação da equação da primeira Zona de Fresnel.
+
 04/05 - Criação da lógica de análise de obstrução: Processamento de relevo e margem de folga.
+
 11/05 - Testes de validação de visibilidade: Verificação de obstruções críticas e bugs.
+
 18/05 - Formatação da saída de dados: Exibição da distância total e status do enlace.
 25/05 - Revisão final do código e documentação.
 01/06 - Seminário e apresentação dos resultados.
