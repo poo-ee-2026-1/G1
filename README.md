@@ -30,32 +30,18 @@ Motivo
 
  A necessidade de prever o comportamento de links de rádio surge devido à crescente dependência de redes sem fio para comunicação crítica e internet de alta velocidade. Entretanto, na maioria dos casos, projetistas enfrentam dificuldades em visualizar como o relevo e os obstáculos urbanos impactam o sinal antes da instalação física dos equipamentos. Essa falta de simulação prévia dificulta a identificação de "zonas cegas" e impede a adoção de medidas corretivas, como o aumento da altura das torres ou a mudança de frequências, resultando em enlaces instáveis ou inoperantes. Assim, surge a necessidade de um sistema capaz de monitorar e estimar a visibilidade de rádio entre diferentes dispositivos elétricos, permitindo ao usuário acompanhar de forma clara e organizada se o caminho físico entre o transmissor e o receptor cumpre os requisitos mínimos de propagação eletromagnética. 
 
-
-
-.
   
 ## Cronograma
 
-16/03 - Definição do tema do projeto: Estudo de rádio visibilidade e propagação;
-
-23/03 - Definição do cronograma de desenvolvimento;
-
-30/03 - Estrutura base do programa (Setup do projeto Java);
-
-06/04 - Definições de objetos e classes (Antena, Coordenada, Obstáculo);
-
-13/04 - Aprimoramento das características dos objetos (Ganho, Frequência, Altura);
-
-20/04 - Implementação do cálculo de distância geodésica (Haversine);
-
-27/04 - Desenvolvimento do algoritmo de cálculo da Zona de Fresnel;
-
-04/05 - Criação da lógica de análise de obstrução (Simulação de barreiras e relevo);
-
-11/05 - Testes de validação de visibilidade e correção de bugs;
-
-18/05 - Formatação da saída de dados (Exibição de status LoS e alertas de sinal);
-
-25/05 - Revisão final do código;
-
-01/06 - Seminário.
+16/03 - Definição do tema do projeto: Estudo de rádio visibilidade e propagação.
+23/03 - Definição do cronograma de desenvolvimento.
+30/03 - Estrutura base do programa: Setup do projeto e arquitetura de pacotes.
+06/04 - Definições de objetos e classes: Modelagem de Torres, Antenas e Coordenadas.
+13/04 - Aprimoramento das características dos objetos: Implementação de Ganho, Frequência e Altura.
+20/04 - Implementação do cálculo de distância geodésica: Integração de parâmetros geográficos.
+27/04 - Desenvolvimento do algoritmo de cálculo: Aplicação da equação da primeira Zona de Fresnel.
+04/05 - Criação da lógica de análise de obstrução: Processamento de relevo e margem de folga.
+11/05 - Testes de validação de visibilidade: Verificação de obstruções críticas e bugs.
+18/05 - Formatação da saída de dados: Exibição da distância total e status do enlace.
+25/05 - Revisão final do código e documentação.
+01/06 - Seminário e apresentação dos resultados.
