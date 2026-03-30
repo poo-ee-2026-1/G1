@@ -16,26 +16,39 @@ Meanwhile, the compiled output files will be generated in the `bin` folder by de
 ## Dependency Management
 
 The `JAVA PROJECTS` view allows you to manage your dependencies. More details can be found [here](https://github.com/microsoft/vscode-java-dependency#manage-dependencies).
-SIMULADOR DE REDES DE TRANSMISSAO- ANALISE DO FLUXO DE CARGA 
+### SIMULADOR DE RÁDIO-VISIBILIDADE 
 
-- Introdução: A rede elétrica é um sistema interligado e  altamente complexo, composto por linhas de transmissão e distribuição usinas, subestações, sendo responsável pela geração, transporte e entrega de energia. Tal rede funciona como uma "máquina" sistêmica, garantindo o fluxo contínuo e seguro da eletricidadeé frequentemente descrita como a máquina mais complexa já construída pela humanidade. Diferente de outras infraestruturas de transporte, a energia elétrica em larga escala não pode ser armazenada de forma eficiente; ela deve ser gerada no exato instante em que é consumida. Além disso, a energia não viaja por rotas pré-definidas de forma controlada como os dados em uma rede de internet. O fluxo de potência obedece estritamente às leis da física — especificamente as Leis de Kirchhoff — espalhando-se pelas linhas de transmissão de acordo com a impedância de cada caminho. Nesse cenário, é comum surgirem algumas dúvidas sobre o funcionamento do sistema. Por exemplo, o que ocorre quando uma linha de transmissão falha, se as demais podem ficar sobrecarregadas a ponto de superaquecer e até sofrer danos, e se a tensão em uma determinada cidade pode cair abaixo dos níveis seguros nos horários de maior consumo.
+## Introdução
+A conectividade sem fio representa um dos pilares fundamentais da infraestrutura tecnológica moderna, sendo essencial para a integração de sistemas residenciais, comerciais e industriais. Com o aumento da demanda por transmissão de dados e a necessidade de redes cada vez mais estáveis, torna-se crucial o desenvolvimento de ferramentas que permitam simular e analisar a viabilidade de enlaces de rádio entre diferentes pontos geográficos. Sistemas de análise de rádio visibilidade cumprem este papel ao fornecer informações detalhadas sobre a propagação do sinal, possibilitando a identificação de obstáculos que possam causar obstruções e auxiliando na definição da altura ideal das torres e na potência dos equipamentos. Esses sistemas permitem prever o comportamento da Zona de Fresnel, que consiste em um elipsóide de revolução ao redor da linha de visada direta entre as antenas transmissoras e receptoras, além de considerar a influência da curvatura da Terra para reduzir custos de instalação e garantir uma gestão eficiente do espectro de frequências.
 
-- Objetivo: O objetivo de um simulador de redes de transmissão surge como uma alternativa para analisar e monitorar o comportamento do sistema, permitindo identificar situações que estejam dentro ou fora das condições normais de operação.
+## Objetivo 
+O objetivo central deste projeto é simular a viabilidade de comunicação via rádio entre dois pontos a partir do tipo de equipamento e da localização geográfica das torres. O sistema permite registrar as antenas presentes no enlace, mostrar a margem de folga da Zona de Fresnel por trecho e calcular a distância total do enlace em quilômetros, estimando com precisão se o sinal sofrerá obstruções críticas que impeçam a transmissão. Para alcançar este propósito, o simulador integra a modelagem técnica dos elementos do enlace com o cálculo físico da propagação eletromagnética. O núcleo computacional processa os parâmetros geográficos e aplica a equação da primeira Zona de Fresnel para calcular o raio de visada livre no espaço tridimensional. Com base nesse raio, o software executa análises que consideram a altura do relevo e verificam a margem de folga necessária para prever perdas de sinal.
   
-- Metódo: O simulador integra a modelagem Orientada a Objetos para representar os componentes da rede (barras e linhas) com o cálculo matemático do sistema elétrico. Seu núcleo computacional monta a Matriz de Admitância Nodal (Ybus) e aplica o método iterativo de Newton-Raphson para resolver as equações não lineares de fluxo de potência. Com o estado da rede calculado, o software executa análises de contingência, simulando falhas de equipamentos e recalculando o fluxo para prever com segurança possíveis sobrecargas ou quedas de tensão.
+## Motivo
+A necessidade de prever o comportamento de links de rádio surge devido à crescente dependência de redes sem fio para comunicação crítica e internet de alta velocidade. Entretanto, na maioria dos casos, projetistas enfrentam dificuldades em visualizar como o relevo e os obstáculos urbanos impactam o sinal antes da instalação física dos equipamentos. Essa falta de simulação prévia dificulta a identificação de "zonas cegas" e impede a adoção de medidas corretivas, como o aumento da altura das torres ou a mudança de frequências, resultando em enlaces instáveis ou inoperantes. Assim, surge a necessidade de um sistema capaz de monitorar e estimar a visibilidade de rádio entre diferentes dispositivos elétricos, permitindo ao usuário acompanhar de forma clara e organizada se o caminho físico entre o transmissor e o receptor cumpre os requisitos mínimos de propagação eletromagnética.
   
--  Motivo: Como a infraestrutura é crítica e a energia elétrica não pode ser facilmente armazenada em larga escala, qualquer falha no mundo físico pode resultar em blecautes, danos a equipamentos caros e prejuízos enormes à sociedade. O simulador resolve o desafio de prever esses cenários complexos de forma totalmente segura. Não se pode simplesmente desligar uma linha física para testar se outra vai sobrecarregar. O simulador se faz necessário para prever esse efeito dominó (cascateamento) em um ambiente isolado e seguro.
-  
-- Cronograma:
-- 16/03 - Definição do tema do projeto;
-- 23/03 - Definição do cronograma;
-- 30/03 - Estrutura base do programa;
-- 06/04 - Definições de objetos e classes;
-- 13/04 - Aprimoramento das características dos objetos;
-- 20/04 - Implementação da montagem da Matriz de Admitância (Ybus);
-- 27/04 - Desenvolvimento do algoritmo de cálculo (Newton-Raphson);
-- 04/05 - Criação da lógica de análise de contingência (simulação de falhas);
-- 11/05 - Testes de validação de fluxo e correção de bugs;
-- 18/05 - Formatação da saída de dados (exibição de tensões, fluxos e alertas);
-- 25/05 - Revisão final do código e preparação dos slides da apresentação;
-- 01/06 - Seminário.
+## Cronograma
+
+- 16/03 - Definição do tema do projeto: Estudo de rádio visibilidade e propagação;
+
+- 23/03 - Definição do cronograma de desenvolvimento;
+
+- 30/03 - Estrutura base do programa: Setup do projeto e arquitetura de pacotes;
+
+- 06/04 - Definições de objetos e classes: Modelagem de Torres, Antenas e Coordenadas;
+
+- 13/04 - Aprimoramento das características dos objetos: Implementação de Ganho, Frequência e Altura;
+
+- 20/04 - Implementação do cálculo de distância geodésica: Integração de parâmetros geográficos;
+
+- 27/04 - Desenvolvimento do algoritmo de cálculo: Aplicação da equação da primeira Zona de Fresnel;
+
+- 04/05 - Criação da lógica de análise de obstrução: Processamento de relevo e margem de folga;
+
+- 11/05 - Testes de validação de visibilidade: Verificação de obstruções críticas e bugs;
+
+- 18/05 - Formatação da saída de dados: Exibição da distância total e status do enlace;
+
+- 25/05 - Revisão final do código e documentação;
+
+- 01/06 - Seminário e apresentação dos resultados.
