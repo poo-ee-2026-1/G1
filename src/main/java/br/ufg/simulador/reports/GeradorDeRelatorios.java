@@ -1,5 +1,6 @@
 package br.ufg.simulador.reports;
 
-public class GeradorDeRelatorios {
+public class GeradorDeRelatorios 
+{
 
 }
