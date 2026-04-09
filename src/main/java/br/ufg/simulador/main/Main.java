@@ -19,7 +19,8 @@ public class Main
 
         Enlace enlace = new Enlace();
 
-        Obstaculo obstaculo = new Obstaculo();
+        Obstaculo obstaculo1 = new Obstaculo("Prédio A", -16.6820, -49.2570, 20.0, 10.0);
+        Obstaculo obstaculo2 = new Obstaculo("Árvore B", -16.6830, -49.2580, 15.0, 5.0);
 
         ClienteTopografia cliente = new ClienteTopografia();
 
