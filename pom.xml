@@ -14,10 +14,16 @@
     </properties>
 
     <dependencies>
-        <dependency>
-            <groupId>org.json</groupId>
-            <artifactId>json</artifactId>
-            <version>20240303</version>
-        </dependency>
-    </dependencies>
+    <dependency>
+        <groupId>local.openstreetmap</groupId>
+        <artifactId>openstreetmap</artifactId>
+        <version>1.03</version>
+    </dependency>
+
+    <dependency>
+        <groupId>local.json</groupId>
+        <artifactId>json</artifactId>
+        <version>20251224</version>
+    </dependency>
+</dependencies>
 </project>

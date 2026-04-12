@@ -5,6 +5,8 @@ import java.net.URI;
 import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
+import java.util.Locale;
+
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -45,7 +47,8 @@ public class ClienteTopografia
 
     public double[] getPerfilTerreno(double lat1, double lon1, double lat2, double lon2, int pontos) {
         // Formata a URL para buscar um perfil de terreno entre dois pontos
-        String url = String.format("%slocations=%f,%f|%f,%f&samples=%d",
+        // Usa Locale.US para garantir pontos decimais e %%7C no lugar de |
+        String url = String.format(Locale.US, "%slocations=%f,%f%%7C%f,%f&samples=%d",
             API_URL, lat1, lon1, lat2, lon2, pontos);
 
         double[] perfil = new double[pontos];
