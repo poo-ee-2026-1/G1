@@ -52,3 +52,41 @@ The `JAVA PROJECTS` view allows you to manage your dependencies. More details ca
 - 25/05 - Revisão final do código e documentação;
 
 - 01/06 - Seminário e apresentação dos resultados.
+
+## Classes
+
+1. TelaGrafico:
+- Herança: Esta classe herda de javax.swing.JFrame (extends JFrame), aproveitando todo o comportamento de uma janela de aplicativo padrão do Java. A sua classe interna PainelGrafico herda de javax.swing.JPanel.
+- Polimorfismo: Apresenta polimorfismo de sobreposição (override) na classe interna PainelGrafico, sobrescrevendo o método paintComponent(Graphics g) da superclasse JPanel para desenhar formas gráficas customizadas, como a linha de visada, terreno e Zonas de Fresnel. Também utiliza polimorfismo ao instanciar classes anônimas que estendem MouseAdapter e MouseMotionAdapter, reescrevendo comportamentos de eventos de mouse (ex: mouseMoved).
+- Encapsulamento: Os dados internos de estado do gráfico, como res (o resultado da simulação) e coordenadas de rastreamento do mouse (mouseX, mouseY), são declarados como private na classe aninhada, impedindo a modificação indevida por outras classes.
+   
+2. TelaMapa:
+- Herança: Herda de javax.swing.JFrame.
+- Polimorfismo: Implementa polimorfismo de substituição ao usar classes anônimas de MouseAdapter, sobrescrevendo mouseClicked(MouseEvent e) para capturar a posição do mouse no mapa.
+- Encapsulamento: Os componentes visuais (como botões btnLimpar, btnSimular), variáveis de contagem (contadorTorres) e objetos de mapa (map, coordenadas) são protegidos com acesso private. A classe controla os fluxos garantindo que o mapa e os estados não sejam expostos abertamente.
+
+3. Torre:
+- Herança: Nenhuma explicita (herda diretamente da classe base Object).
+- Encapsulamento (Forte): Possui um encapsulamento estrito. Os atributos (latitude, longitude, altitudeTerreno, alturaEstrutura e o objeto antena) são private. Além disso, os métodos setters (setAlturaEstrutura, setAntena) executam lógicas de validação que disparam exceções (IllegalArgumentException) caso o programa tente definir uma altura de antena superior à altura da torre, protegendo a consistência da regra de negócio.
+
+4. Enlace:
+- Herança / Polimorfismo: Não se aplicam diretamente.
+- Encapsulamento: Os atributos torreA, torreB, frequencia e distancia são privados. O construtor é protegido com validações que impedem que um enlace seja criado com dados null. A lógica matemática para cálculo da distância geodésica está oculta em um método privado calcularDistancia(), blindando a complexidade do uso externo.
+
+5. Antena:
+- Herança / Polimorfismo: Não se aplicam diretamente.
+- Encapsulamento: Seus atributos altura e potenciaTransmissao são não apenas private, mas também final (imutáveis após a construção do objeto), expostos somente por meio de getters. Garantindo que o estado da antena não mude de forma não prevista.
+
+6. Usuario:
+- Encapsulamento: Representa os usuários do sistema. Atributos clássicos de dados e credenciais (nome, email, senha) declarados como private, garantindo o acesso indireto via métodos Getters e Setters públicos para evitar que dados sejam gravados de maneira irregular.
+
+7. ClienteTopografia:
+- Encapsulamento: Encapsula de forma elegante a dependência HttpClient e as constantes sensíveis (como API_URL) declarando-as como private. Os consumidores da classe apenas utilizam métodos públicos simplificados (getAltitude e getPerfilTerreno), sem precisarem conhecer as regras de rede (HTTP), a conversão de JSON ou como as requisições estão sendo construídas.
+
+8. ProcessadorRelevo e CalculoFresnel:
+- São classes focadas em serviços utilitários e algoritmos matemáticos e físicos.
+- Encapsulamento: Elas evitam gerenciar estados, não guardam o histórico do cálculo. Ao invés disso, os métodos recebem parâmetros, processam (por exemplo, fórmulas complexas da Zona de Fresnel) e entregam os resultados.
+
+9. Main:
+- Herança / Polimorfismo: Utiliza polimorfismo através de lambdas (() -> new TelaMapa()) que implicitamente implementam a interface Runnable esperada pelo SwingUtilities.
+- Encapsulamento: Emprega o uso de classes internas estáticas aninhadas (DadosObstaculo, ObstaculoInfo, Resultado) para empacotar informações de maneira encapsulada e organizada entre as chamadas dos processos lógicos da classe. O método executarSimulacao é o grande orquestrador e mantém grande parte do fluxo transacional enclausurado em sua estrutura.
