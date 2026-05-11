@@ -9,7 +9,8 @@ public class Torre
     
     // 2. Atributos Físicos e Equipamentos 
     private double alturaEstrutura; // A altura da torre de metal em metros
-    private Antena antena; // Composição: a torre agora "tem uma" antena
+    private java.util.List<Antena> antenas = new java.util.ArrayList<>();
+    private int antenaSelecionadaIndex = 0; // Qual antena será usada no enlace principal
     
     // 3. Método Construtor
     // É chamado no momento em que criamos uma "nova Torre()" no sistema
@@ -24,7 +25,8 @@ public class Torre
     // Calcula a altura total da ponta da antena em relação ao nível do mar
     public double getAltitudeTotalAntena() {
         // A altitude total considera que a altura da antena é a sua posição de instalação na torre
-        double alturaInstalacao = (this.antena != null) ? this.antena.getAltura() : this.alturaEstrutura;
+        Antena antenaUsada = getAntena();
+        double alturaInstalacao = (antenaUsada != null) ? antenaUsada.getAltura() : this.alturaEstrutura;
         return this.altitudeTerreno + alturaInstalacao;
     }
 
@@ -56,21 +58,35 @@ public class Torre
     }
 
     public void setAlturaEstrutura(double alturaEstrutura) {
-        if (this.antena != null && this.antena.getAltura() > alturaEstrutura) {
-            throw new IllegalArgumentException("A nova altura da torre (" + alturaEstrutura + "m) não pode ser menor que a altura de instalação da antena (" + this.antena.getAltura() + "m).");
+        for (Antena a : antenas) {
+            if (a.getAltura() > alturaEstrutura) {
+                throw new IllegalArgumentException("A nova altura da torre (" + alturaEstrutura + "m) não pode ser menor que a altura de instalação de uma das antenas (" + a.getAltura() + "m).");
+            }
         }
         this.alturaEstrutura = alturaEstrutura;
     }
 
     public Antena getAntena() {
-        return antena;
+        if (antenas.isEmpty()) return null;
+        if (antenaSelecionadaIndex >= 0 && antenaSelecionadaIndex < antenas.size()) {
+            return antenas.get(antenaSelecionadaIndex);
+        }
+        return antenas.get(0);
     }
 
-    public void setAntena(Antena antena) {
+    public java.util.List<Antena> getAntenas() {
+        return antenas;
+    }
+
+    public void setAntenaSelecionadaIndex(int index) {
+        this.antenaSelecionadaIndex = index;
+    }
+
+    public void adicionarAntena(Antena antena) {
         if (antena != null && antena.getAltura() > this.alturaEstrutura) {
             throw new IllegalArgumentException("A antena não pode ser instalada a uma altura (" + antena.getAltura() + "m) maior que a própria estrutura da torre (" + this.alturaEstrutura + "m).");
         }
-        this.antena = antena;
+        this.antenas.add(antena);
     }
     
     // (Os demais getters e setters seguiriam o mesmo padrão...)

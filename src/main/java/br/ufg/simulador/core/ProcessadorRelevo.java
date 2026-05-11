@@ -8,9 +8,9 @@ public class ProcessadorRelevo
         for (int i = 0; i < perfilBruto.length; i++) {
             // A fórmula de curvatura é: h = (d1 * d2) / (12.74 * K)
             // onde d1 e d2 são as distâncias da torre A e torre B até o ponto i, e K é o fator de curvatura (geralmente 4/3 para rádio)
-            double d1 = (distanciaTotalKm / perfilBruto.length) * i;
-            double d2 = (distanciaTotalKm / perfilBruto.length) * (i + 1);
-            double h = (d1 * d2) / (12.74 * 4/3);
+            double d1 = (distanciaTotalKm / (perfilBruto.length - 1)) * i;
+            double d2 = distanciaTotalKm - d1;
+            double h = (d1 * d2) / (12.74 * (4.0 / 3.0));
             perfilProcessado[i] = perfilBruto[i] + h;
         }   
         return perfilProcessado;
