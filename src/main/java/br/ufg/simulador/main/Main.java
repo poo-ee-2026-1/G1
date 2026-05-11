@@ -38,6 +38,14 @@ public class Main
         }
     }
 
+    // Classe auxiliar para trafegar as configurações da torre da UI para o Core
+    public static class DadosTorre {
+        public double latitude;
+        public double longitude;
+        public double alturaEstrutura;
+        public List<Antena> antenas = new ArrayList<>();
+    }
+
     // Classe auxiliar para armazenar dados dos obstáculos no gráfico
     public static class ObstaculoInfo {
         public String nome;
@@ -62,8 +70,18 @@ public class Main
         public List<ObstaculoInfo> obstaculos;
         public double alturaTorreA;
         public double alturaTorreB;
+        public double[] alturasAntenasA;
+        public double[] alturasAntenasB;
+        public int antenaPrincipalAIndex;
+        public int antenaPrincipalBIndex;
+        public String antenaAInfo;
+        public String antenaBInfo;
+        public double perdaEspacoLivre;
+        public double potenciaRecepcao;
+        public boolean obstrucaoFresnel;
+        public double sensibilidadeReceptor;
         
-        public Resultado(boolean viavel, double distancia, double[] distanciasPonto, double[] elevacaoTerreno, double[] linhaVisada, double[] fresnelInferior, List<ObstaculoInfo> obstaculos, double alturaTorreA, double alturaTorreB) {
+        public Resultado(boolean viavel, double distancia, double[] distanciasPonto, double[] elevacaoTerreno, double[] linhaVisada, double[] fresnelInferior, List<ObstaculoInfo> obstaculos, double alturaTorreA, double alturaTorreB, double[] alturasAntenasA, double[] alturasAntenasB, int antenaPrincipalAIndex, int antenaPrincipalBIndex, String antenaAInfo, String antenaBInfo, double perdaEspacoLivre, double potenciaRecepcao, boolean obstrucaoFresnel, double sensibilidadeReceptor) {
             this.viavel = viavel;
             this.distancia = distancia;
             this.distanciasPonto = distanciasPonto;
@@ -73,11 +91,21 @@ public class Main
             this.obstaculos = obstaculos;
             this.alturaTorreA = alturaTorreA;
             this.alturaTorreB = alturaTorreB;
+            this.alturasAntenasA = alturasAntenasA;
+            this.alturasAntenasB = alturasAntenasB;
+            this.antenaPrincipalAIndex = antenaPrincipalAIndex;
+            this.antenaPrincipalBIndex = antenaPrincipalBIndex;
+            this.antenaAInfo = antenaAInfo;
+            this.antenaBInfo = antenaBInfo;
+            this.perdaEspacoLivre = perdaEspacoLivre;
+            this.potenciaRecepcao = potenciaRecepcao;
+            this.obstrucaoFresnel = obstrucaoFresnel;
+            this.sensibilidadeReceptor = sensibilidadeReceptor;
         }
     }
 
     // Novo método que receberá os dados do clique no mapa e executará o fluxo
-    public static Resultado executarSimulacao(double latA, double lonA, double latB, double lonB, List<DadosObstaculo> dadosObstaculos) 
+    public static Resultado executarSimulacao(DadosTorre configA, DadosTorre configB, List<DadosObstaculo> dadosObstaculos, double frequencia) 
     {
         ProcessadorRelevo processador = new ProcessadorRelevo();
 
@@ -86,21 +114,21 @@ public class Main
         ClienteTopografia cliente = new ClienteTopografia();
 
         // Coordenadas da Torre A agora vêm dos parâmetros do método
-        double altitudeChaoA = cliente.getAltitude(latA, lonA); // Chamada da API
+        double altitudeChaoA = cliente.getAltitude(configA.latitude, configA.longitude);
 
         // Coordenadas da Torre B agora vêm dos parâmetros do método
-        double altitudeChaoB = cliente.getAltitude(latB, lonB); // Chamada da API
+        double altitudeChaoB = cliente.getAltitude(configB.latitude, configB.longitude);
 
         // Criando as Torres com as altitudes dinâmicas vindas da API
-        Torre torreA = new Torre(latA, lonA, altitudeChaoA, 30.0);
-        Torre torreB = new Torre(latB, lonB, altitudeChaoB, 45.0);
+        Torre torreA = new Torre(configA.latitude, configA.longitude, altitudeChaoA, configA.alturaEstrutura);
+        Torre torreB = new Torre(configB.latitude, configB.longitude, altitudeChaoB, configB.alturaEstrutura);
 
         // Criando e associando antenas às torres (altura de instalação na torre, potência de transmissão em dBm)
-        torreA.setAntena(new Antena(30.0, 30.0)); // Antena instalada no topo da torre de 30m
-        torreB.setAntena(new Antena(45.0, 30.0)); // Antena instalada no topo da torre de 45m
+        for (Antena ant : configA.antenas) torreA.adicionarAntena(ant);
+        for (Antena ant : configB.antenas) torreB.adicionarAntena(ant);
 
         // Criando o Enlace apenas após as Torres reais estarem configuradas com os dados da API
-        Enlace enlace = new Enlace(torreA, torreB, 2.4); // Frequência de 2.4 GHz (Wi-Fi)
+        Enlace enlace = new Enlace(torreA, torreB, frequencia);
 
         // --- Análise do Perfil do Terreno ---
 
@@ -114,7 +142,7 @@ public class Main
         if (numeroDeAmostras > 500) numeroDeAmostras = 500;
 
         // Busca o perfil do terreno entre a Torre A e a Torre B
-        double[] perfilDoTerreno = cliente.getPerfilTerreno(latA, lonA, latB, lonB, numeroDeAmostras);
+        double[] perfilDoTerreno = cliente.getPerfilTerreno(configA.latitude, configA.longitude, configB.latitude, configB.longitude, numeroDeAmostras);
 
         System.out.println("Perfil do terreno obtido com " + perfilDoTerreno.length + " amostras.");
 
@@ -134,9 +162,77 @@ public class Main
         System.out.println("Efeito da curvatura da Terra aplicado com sucesso.");
 
         // --- Extração de Variáveis ---
-        boolean enlaceViavel = true;
         double distanciaTotal = enlace.getDistancia();
         double freq = enlace.getFrequencia();
+
+        // --- Otimização: Pré-cálculo de variáveis independentes das antenas ---
+        double[] preCalcD1 = new double[perfilProcessado.length];
+        double[] preCalcD2 = new double[perfilProcessado.length];
+        double[] preCalcRaioFresnel = new double[perfilProcessado.length];
+        for (int k = 0; k < perfilProcessado.length; k++) {
+            preCalcD1[k] = (distanciaTotal / (perfilProcessado.length - 1)) * k;
+            preCalcD2[k] = distanciaTotal - preCalcD1[k];
+            preCalcRaioFresnel[k] = (preCalcD1[k] == 0 || preCalcD2[k] == 0) ? 0 : calculo.calcularRaioFresnel(preCalcD1[k], preCalcD2[k], freq);
+        }
+
+        // --- Auto-Teste de Antenas (Encontrar a melhor combinação) ---
+        int melhorIa = 0;
+        int melhorIb = 0;
+        boolean encontrouViavel = false;
+
+        System.out.println("\nIniciando auto-teste de combinações de antenas...");
+        for (int ia = 0; ia < configA.antenas.size(); ia++) {
+            for (int ib = 0; ib < configB.antenas.size(); ib++) {
+                torreA.setAntenaSelecionadaIndex(ia);
+                torreB.setAntenaSelecionadaIndex(ib);
+                
+                double altA = torreA.getAltitudeTotalAntena();
+                double altB = torreB.getAltitudeTotalAntena();
+                
+                boolean viavelAtual = true;
+                for (int k = 0; k < perfilProcessado.length; k++) {
+                    if (preCalcD1[k] == 0 || preCalcD2[k] == 0) continue;
+                    
+                    double altVisada = calculo.calcularAltitudeLinhaVisada(altA, altB, preCalcD1[k], preCalcD2[k]);
+                    
+                    if (calculo.verificarObstrucao(altVisada, perfilProcessado[k], preCalcRaioFresnel[k], 0.6)) {
+                        viavelAtual = false;
+                        break;
+                    }
+                }
+                
+                if (viavelAtual) {
+                    encontrouViavel = true;
+                    melhorIa = ia;
+                    melhorIb = ib;
+                    break;
+                }
+            }
+            if (encontrouViavel) break;
+        }
+
+        // Se nenhuma combinação for viável, escolhe as antenas mais altas como padrão para minimizar obstruções
+        if (!encontrouViavel) {
+            double maxAltA = -1;
+            for (int i = 0; i < configA.antenas.size(); i++) {
+                if (configA.antenas.get(i).getAltura() > maxAltA) {
+                    maxAltA = configA.antenas.get(i).getAltura();
+                    melhorIa = i;
+                }
+            }
+            double maxAltB = -1;
+            for (int i = 0; i < configB.antenas.size(); i++) {
+                if (configB.antenas.get(i).getAltura() > maxAltB) {
+                    maxAltB = configB.antenas.get(i).getAltura();
+                    melhorIb = i;
+                }
+            }
+        }
+
+        // Fixa as antenas principais encontradas
+        torreA.setAntenaSelecionadaIndex(melhorIa);
+        torreB.setAntenaSelecionadaIndex(melhorIb);
+
         double altAntenaA = torreA.getAltitudeTotalAntena();
         double altAntenaB = torreB.getAltitudeTotalAntena();
 
@@ -153,7 +249,6 @@ public class Main
         */
 
         // --- Análise da Zona de Fresnel ---
-        System.out.println("\nIniciando análise de visibilidade e Zona de Fresnel...");
         
         // Arrays para armazenar os dados do gráfico
         double[] arrayDist = new double[perfilProcessado.length];
@@ -183,12 +278,11 @@ public class Main
             boolean temObstrucao = calculo.verificarObstrucao(altVisada, altTerrenoPonto, raioFresnel, 0.6);
             
             if (temObstrucao) {
-                enlaceViavel = false;
                 System.out.printf("ALERTA: Obstrução no relevo detectada a %.2f km da Torre A! (Visada: %.2fm | Terreno: %.2fm | Raio: %.2fm)\n", d1, altVisada, altTerrenoPonto, raioFresnel);
             }
         }
 
-        if (enlaceViavel) {
+        if (encontrouViavel) {
             System.out.println("\nSTATUS DO ENLACE: VIÁVEL! A primeira Zona de Fresnel possui margem de folga adequada.");
         } else {
             System.out.println("\nSTATUS DO ENLACE: INVIÁVEL! Foram detectadas obstruções críticas no trajeto.");
@@ -196,6 +290,30 @@ public class Main
 
         GeradorDeRelatorios gerador = new GeradorDeRelatorios();
         
-        return new Resultado(enlaceViavel, distanciaTotal, arrayDist, arrayTerreno, arrayVisada, arrayFresnel, obstaculosGrafico, altAntenaA - torreA.getAltitudeTerreno(), altAntenaB - torreB.getAltitudeTerreno());
+        String infoA = torreA.getAntena() != null ? String.format("Antena %d | Alt: %.1fm | Pot: %.1fdBm | Ganho: %.1fdBi", melhorIa + 1, torreA.getAntena().getAltura(), torreA.getAntena().getPotenciaTransmissao(), torreA.getAntena().getGanho()) : "Nenhuma";
+        String infoB = torreB.getAntena() != null ? String.format("Antena %d | Alt: %.1fm | Pot: %.1fdBm | Ganho: %.1fdBi", melhorIb + 1, torreB.getAntena().getAltura(), torreB.getAntena().getPotenciaTransmissao(), torreB.getAntena().getGanho()) : "Nenhuma";
+
+        double[] arrayAntenasA = new double[configA.antenas.size()];
+        for(int i=0; i<configA.antenas.size(); i++) arrayAntenasA[i] = configA.antenas.get(i).getAltura();
+        
+        double[] arrayAntenasB = new double[configB.antenas.size()];
+        for(int i=0; i<configB.antenas.size(); i++) arrayAntenasB[i] = configB.antenas.get(i).getAltura();
+
+        // --- Cálculo de Perda e Potência Estimada ---
+        // Cálculo de Perda de Espaço Livre (FSPL - Free Space Path Loss) = 20log10(d_km) + 20log10(f_GHz) + 92.45
+        double fspl = 20 * Math.log10(distanciaTotal) + 20 * Math.log10(freq) + 92.45;
+        
+        double txPower = torreA.getAntena() != null ? torreA.getAntena().getPotenciaTransmissao() : 0.0;
+        double txGain = torreA.getAntena() != null ? torreA.getAntena().getGanho() : 0.0;
+        double rxGain = torreB.getAntena() != null ? torreB.getAntena().getGanho() : 0.0;
+        double rxPower = txPower + txGain + rxGain - fspl;
+        
+        // Verificação final de viabilidade, considerando também a sensibilidade
+        double sensibilidadeReceptor = torreB.getAntena() != null ? torreB.getAntena().getSensibilidade() : -120.0; // Padrão seguro
+        boolean sinalSuficiente = rxPower > sensibilidadeReceptor;
+        
+        boolean enlaceViavel = encontrouViavel && sinalSuficiente;
+
+        return new Resultado(enlaceViavel, distanciaTotal, arrayDist, arrayTerreno, arrayVisada, arrayFresnel, obstaculosGrafico, torreA.getAlturaEstrutura(), torreB.getAlturaEstrutura(), arrayAntenasA, arrayAntenasB, melhorIa, melhorIb, infoA, infoB, fspl, rxPower, !encontrouViavel, sensibilidadeReceptor);
     }
 }

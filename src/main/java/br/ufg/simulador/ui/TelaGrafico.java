@@ -210,16 +210,44 @@ public class TelaGrafico extends JFrame {
 
             // Torre A (Início)
             int yChaoA = getHeight() - padding - (int) ((res.elevacaoTerreno[0] - minY) * scaleY);
-            g2d.drawLine(startX, yChaoA, startX, startY); // Linha do chão até a antena
-            g2d.fillOval(startX - 5, startY - 5, 10, 10); // Círculo representando a antena
-            g2d.drawString(String.format("Torre A (%.0fm)", res.alturaTorreA), startX - 20, startY - 15); // Rótulo
+            int yTopoTorreA = getHeight() - padding - (int) ((res.elevacaoTerreno[0] + res.alturaTorreA - minY) * scaleY);
+            g2d.drawLine(startX, yChaoA, startX, yTopoTorreA); // Linha do chão até o topo da torre
+            
+            // Desenha todas as antenas da Torre A
+            for (int i = 0; i < res.alturasAntenasA.length; i++) {
+                int yAntena = getHeight() - padding - (int) ((res.elevacaoTerreno[0] + res.alturasAntenasA[i] - minY) * scaleY);
+                if (i == res.antenaPrincipalAIndex) {
+                    g2d.setColor(Color.BLUE);
+                    g2d.fillOval(startX - 6, yAntena - 6, 12, 12); // Antena Principal (Maior)
+                } else {
+                    g2d.setColor(Color.ORANGE);
+                    g2d.fillOval(startX - 4, yAntena - 4, 8, 8); // Secundárias (Menores)
+                }
+            }
+            g2d.setColor(Color.BLACK);
+            g2d.drawString(String.format("Torre A (%.0fm)", res.alturaTorreA), startX - 20, yTopoTorreA - 15); // Rótulo
 
             // Torre B (Fim)
             int lastIndex = res.elevacaoTerreno.length - 1;
             int yChaoB = getHeight() - padding - (int) ((res.elevacaoTerreno[lastIndex] - minY) * scaleY);
-            g2d.drawLine(endX, yChaoB, endX, endY); // Linha do chão até a antena
-            g2d.fillOval(endX - 5, endY - 5, 10, 10); // Círculo representando a antena
-            g2d.drawString(String.format("Torre B (%.0fm)", res.alturaTorreB), endX - 20, endY - 15); // Rótulo
+            int yTopoTorreB = getHeight() - padding - (int) ((res.elevacaoTerreno[lastIndex] + res.alturaTorreB - minY) * scaleY);
+            
+            g2d.setColor(corTorre);
+            g2d.drawLine(endX, yChaoB, endX, yTopoTorreB); 
+            
+            // Desenha todas as antenas da Torre B
+            for (int i = 0; i < res.alturasAntenasB.length; i++) {
+                int yAntena = getHeight() - padding - (int) ((res.elevacaoTerreno[lastIndex] + res.alturasAntenasB[i] - minY) * scaleY);
+                if (i == res.antenaPrincipalBIndex) {
+                    g2d.setColor(Color.BLUE);
+                    g2d.fillOval(endX - 6, yAntena - 6, 12, 12);
+                } else {
+                    g2d.setColor(Color.ORANGE);
+                    g2d.fillOval(endX - 4, yAntena - 4, 8, 8);
+                }
+            }
+            g2d.setColor(Color.BLACK);
+            g2d.drawString(String.format("Torre B (%.0fm)", res.alturaTorreB), endX - 20, yTopoTorreB - 15); // Rótulo
 
             // --- DESENHAR EIXOS ---
             g2d.setColor(Color.BLACK);
@@ -229,9 +257,21 @@ public class TelaGrafico extends JFrame {
             g2d.drawString("Distância (km)", padding + (width / 2) - 40, getHeight() - 15);
             g2d.drawString("Altitude (m)", 10, 30);
 
+            // --- DESENHAR INFO DE SINAL DO ENLACE (BALANÇO) ---
+            int infoX = padding + 20;
+            int infoY = padding + 20;
+            g2d.setColor(new Color(255, 255, 255, 220)); // Fundo Branco Translúcido
+            g2d.fillRect(infoX, infoY, 260, 50);
+            g2d.setColor(Color.BLACK);
+            g2d.setStroke(new BasicStroke(1.0f));
+            g2d.drawRect(infoX, infoY, 260, 50);
+            g2d.setFont(new Font("Arial", Font.BOLD, 12));
+            g2d.drawString(String.format("Atenuação do Ar (FSPL): %.2f dB", res.perdaEspacoLivre), infoX + 10, infoY + 20);
+            g2d.drawString(String.format("Sinal Recebido Estimado (Rx): %.2f dBm", res.potenciaRecepcao), infoX + 10, infoY + 40);
+
             // --- DESENHAR LEGENDA ---
             int legendaWidth = 180;
-            int legendaHeight = 115; // Altura reduzida devido a remoção do item de Obstáculo
+            int legendaHeight = 155; // Ajustado para incluir as antenas secundárias
             int legendaX = padding + width + 15; // Posiciona fora do gráfico, à direita
             int legendaY = padding; // Alinha com o topo do eixo Y
 
@@ -297,6 +337,20 @@ public class TelaGrafico extends JFrame {
             g2d.drawLine(lineX1 + 7, currentY - 12, lineX1 + 7, currentY);
             g2d.setColor(Color.BLACK);
             g2d.drawString("Torre", textX, currentY);
+            currentY += 20;
+
+            // Item 6: Antena Principal
+            g2d.setColor(Color.BLUE);
+            g2d.fillOval(lineX1 + 1, currentY - 10, 12, 12);
+            g2d.setColor(Color.BLACK);
+            g2d.drawString("Antena Principal", textX, currentY);
+            currentY += 20;
+
+            // Item 7: Outras Antenas
+            g2d.setColor(Color.ORANGE);
+            g2d.fillOval(lineX1 + 3, currentY - 8, 8, 8);
+            g2d.setColor(Color.BLACK);
+            g2d.drawString("Outras Antenas", textX, currentY);
 
             // --- DESENHAR TOOLTIP INTERATIVO (Mouse Crosshair) ---
             if (mouseX >= padding && mouseX <= padding + width && mouseY >= padding && mouseY <= getHeight() - padding) {
